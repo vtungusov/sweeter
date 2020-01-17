@@ -1,4 +1,4 @@
-package ru.vtungusov.sweeter;
+package ru.vtungusov.sweeter.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,7 +11,7 @@ import ru.vtungusov.sweeter.repos.MessageRepo;
 import java.util.Map;
 
 @Controller
-public class GreetingController {
+public class MainController {
     @Autowired
     private MessageRepo messageRepo;
 
