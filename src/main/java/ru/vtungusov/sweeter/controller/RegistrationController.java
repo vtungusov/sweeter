@@ -31,6 +31,10 @@ public class RegistrationController {
             model.put("message", "User exists!");
             return "registration";
         }
+        if (user.getUsername().equals("")||user.getPassword().equals("")){
+            model.put("message", "Incorrect data!");
+            return "registration";
+        }
         user.setActive(true);
         user.setRoles(Collections.singleton(Role.USER));
         userRepo.save(user);
