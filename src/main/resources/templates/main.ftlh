@@ -12,12 +12,11 @@
             <button type="submit">Добавить</button>
         </form>
     </div>
-    <form method="post" action="filter">
-        <input type="text" name="filter" placeholder="Тэг">
-        <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+    <div>Список сообщений</div>
+    <form method="get" action="/main">
+        <input type="text" name="filter" value="${filter}">
         <button type="submit">Найти</button>
     </form>
-    <div>Список сообщений</div>
     <#list messages as message>
         <div>
             <b>${message.id}</b>
