@@ -3,31 +3,43 @@ package ru.vtungusov.sweeter.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.vtungusov.sweeter.domain.User;
 import ru.vtungusov.sweeter.service.UserService;
 
+import javax.validation.Valid;
 import java.util.Map;
 
 @Controller
 public class RegistrationController {
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @GetMapping("/registration")
-    public String registration(Model model) {
-        model.addAttribute("message", "");
+    public String registration() {
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String addUser(User user, Map<String, Object> model) {
+    public String addUser(@Valid User user, BindingResult bindingResult, Model model) {
+        if (user.getPassword() != null && !user.getPassword().equals(user.getPassword2())) {
+            bindingResult.addError(new ObjectError("passwordError", "Passwords are different!"));
+            model.addAttribute("passwordError", "Passwords are different!");
+        }
 
-        if (!userService.addUser(user) || StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())) {
-            model.put("message", "User exists!");
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = ControllerUtils.getErrors(bindingResult);
+            model.mergeAttributes(errors);
+
+            return "registration";
+        }
+
+        if (!userService.addUser(user)) {
+            model.addAttribute("usernameError", "User exists!");
             return "registration";
         }
 

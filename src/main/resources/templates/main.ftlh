@@ -10,18 +10,32 @@
             </form>
         </div>
     </div>
-    <a class="btn btn-primary" data-toggle="collapse" href="#collapseMessage" role="button" aria-expanded="false"
-       aria-controls="collapseMessage">
+    <a class="btn btn-primary" data-toggle="collapse" href="#collapseForm" role="button" aria-expanded="false"
+       aria-controls="collapseForm">
         Add new Message
     </a>
-    <div class="collapse" id="collapseMessage">
+    <div class="collapse <#if message??>show</#if>" id="collapseForm">
         <div class="form-group mt-3">
             <form method="post" action="" enctype="multipart/form-data">
                 <div class="form-group">
-                    <input class="form-control" type="text" name="text" placeholder="Введите сообщение">
+                    <input class="form-control ${(textError??)?string('is-invalid', '')}"
+                           value="<#if message??>${message.text}</#if>" type="text" name="text"
+                           placeholder="Введите сообщение">
+                    <#if textError??>
+                        <div class="invalid-feedback">
+                            ${textError}
+                        </div>
+                    </#if>
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="text" name="tag" placeholder="Тэг">
+                    <input class="form-control ${(tagError??)?string('is-invalid', '')}"
+                           value="<#if message??>${message.tag}</#if>" type="text" name="tag"
+                           placeholder="Тэг">
+                    <#if tagError??>
+                        <div class="invalid-feedback">
+                            ${tagError}
+                        </div>
+                    </#if>
                 </div>
                 <div class="form-group">
                     <div class="custom-file">
@@ -36,24 +50,24 @@
             </form>
         </div>
     </div>
-<div class="card-columns">
-    <#list messages as message>
-        <div class="card my-3" style="width: 18rem;">
-            <#if message.filename??>
-                <img class="card-img-top" src="/img/${message.filename}" alt="some pic">
-            </#if>
-            <div class="m-2">
-                <span>${message.text}</span>
-                <i>${message.tag}</i>
+    <div class="card-columns">
+        <#list messages as message>
+            <div class="card my-3" style="width: 18rem;">
+                <#if message.filename??>
+                    <img class="card-img-top" src="/img/${message.filename}" alt="some pic">
+                </#if>
+                <div class="m-2">
+                    <span>${message.text}</span>
+                    <i>${message.tag}</i>
+                </div>
+                <div class="card-footer text-muted">
+                    ${message.authorName}
+                </div>
             </div>
-            <div class="card-footer text-muted">
-                ${message.authorName}
+        <#else>
+            <div>
+                No messages
             </div>
-        </div>
-    <#else>
-        <div>
-            No messages
-        </div>
-    </#list>
-</div>
+        </#list>
+    </div>
 </@c.page>

@@ -1,12 +1,18 @@
 package ru.vtungusov.sweeter.domain;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 public class Message {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @NotBlank(message = "Please fill the message")
+    @Length(max = 2048, message = "Message too long")
     private String text;
     private String tag;
 
