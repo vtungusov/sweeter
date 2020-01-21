@@ -2,6 +2,6 @@
 <#import "parts/login.ftlh" as l>
 <@c.page>
     <div class="mb-1">Registration</div>
-    ${message}
+    ${message!}
     <@l.login "/registration" true/>
 </@c.page>

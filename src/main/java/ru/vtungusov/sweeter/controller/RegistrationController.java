@@ -3,19 +3,19 @@ package ru.vtungusov.sweeter.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import ru.vtungusov.sweeter.domain.Role;
 import ru.vtungusov.sweeter.domain.User;
-import ru.vtungusov.sweeter.repos.UserRepo;
+import ru.vtungusov.sweeter.service.UserService;
 
-import java.util.Collections;
 import java.util.Map;
 
 @Controller
 public class RegistrationController {
     @Autowired
-    UserRepo userRepo;
+    UserService userService;
 
     @GetMapping("/registration")
     public String registration(Model model) {
@@ -25,21 +25,26 @@ public class RegistrationController {
 
     @PostMapping("/registration")
     public String addUser(User user, Map<String, Object> model) {
-        User userFromDb = userRepo.findByUsername(user.getUsername());
 
-        if (userFromDb != null) {
+        if (!userService.addUser(user) || StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())) {
             model.put("message", "User exists!");
             return "registration";
         }
-        if (user.getUsername().equals("")||user.getPassword().equals("")){
-            model.put("message", "Incorrect data!");
-            return "registration";
-        }
-        user.setActive(true);
-        user.setRoles(Collections.singleton(Role.USER));
-        userRepo.save(user);
 
         return "redirect:/login";
+    }
+
+    @GetMapping("/activate/{code}")
+    public String activate(Model model, @PathVariable String code) {
+        boolean isActivate = userService.activateUser(code);
+
+        if (isActivate) {
+            model.addAttribute("message", "User successfully activated");
+        } else {
+            model.addAttribute("message", "Activation code is not found");
+        }
+
+        return "login";
     }
 
 }
